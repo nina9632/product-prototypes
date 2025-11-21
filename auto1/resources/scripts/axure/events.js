@@ -3,9 +3,13 @@
 $axure.internal(function($ax) {
     var _features = $ax.features = {};
     var _supports = _features.supports = {};
+    _supports.touchstart = typeof window.ontouchstart !== 'undefined';
+    _supports.touchmove = typeof window.ontouchmove !== 'undefined';
+    _supports.touchend = typeof window.ontouchend !== 'undefined';
 
+    _supports.mobile = _supports.touchstart && _supports.touchend && _supports.touchmove;
     // Got this from http://stackoverflow.com/questions/11381673/javascript-solution-to-detect-mobile-browser
-    let isMobile = navigator.userAgent.match(/Android/i)
+    var check = navigator.userAgent.match(/Android/i)
         || navigator.userAgent.match(/webOS/i)
         || navigator.userAgent.match(/iPhone/i)
         || navigator.userAgent.match(/iPad/i)
@@ -14,24 +18,19 @@ $axure.internal(function($ax) {
         || navigator.userAgent.match(/Tablet PC/i)
         || navigator.userAgent.match(/Windows Phone/i);
 
-    if(isMobile || navigator.maxTouchPoints || navigator.msMaxTouchPoints) {
-        _supports.touchstart = typeof window.ontouchstart !== 'undefined';
-        _supports.touchmove = typeof window.ontouchmove !== 'undefined';
-        _supports.touchend = typeof window.ontouchend !== 'undefined';
-
-        _supports.pointerdown = typeof window.onpointerdown !== 'undefined';
-        _supports.pointerup = typeof window.onpointerup !== 'undefined';
-        _supports.pointermove = typeof window.onpointermove !== 'undefined';
-    }
-    
-    _supports.mobile = _supports.touchstart && _supports.touchend && _supports.touchmove;
-                    // || _supports.pointerdown && _supports.pointerup && _supports.pointermove;
     _supports.windowsMobile = navigator.userAgent.match(/Tablet PC/i) || navigator.userAgent.match(/Windows Phone/i);
-    
+
+    if(!check && _supports.mobile) {
+        _supports.touchstart = false;
+        _supports.touchmove = false;
+        _supports.touchend = false;
+        _supports.mobile = false;
+    }
+
     var _eventNames = _features.eventNames = {};
-    _eventNames.mouseDownName = _supports.touchstart ? 'touchstart' : _supports.pointerdown ? 'pointerdown' : 'mousedown';
-    _eventNames.mouseUpName = _supports.touchend ? 'touchend' : _supports.pointerup ? 'pointerup' : 'mouseup';
-    _eventNames.mouseMoveName = _supports.touchmove ? 'touchmove' : _supports.pointermove ? 'pointermove' : 'mousemove';
+    _eventNames.mouseDownName = _supports.touchstart ? 'touchstart' : 'mousedown';
+    _eventNames.mouseUpName = _supports.touchend ? 'touchend' : 'mouseup';
+    _eventNames.mouseMoveName = _supports.touchmove ? 'touchmove' : 'mousemove';
 });
 
 // ******* EVENT MANAGER ******** //
@@ -593,23 +592,14 @@ $axure.internal(function ($ax) {
     };
 
     var _attachDefaultObjectEvent = function(elementIdQuery, elementId, eventName, fn) {
-        var func = function(e) {
-            if($ax.style.IsWidgetDisabled(elementId) || _shouldIgnoreLabelClickFromCheckboxOrRadioButton(e)) return true;
-            return fn.apply(this, arguments);
+        var func = function() {
+            if(!$ax.style.IsWidgetDisabled(elementId)) return fn.apply(this, arguments);
+            return true;
         };
 
         var bind = !elementIdQuery[eventName];
         if(bind) elementIdQuery.bind(eventName, func);
         else elementIdQuery[eventName](func);
-    };
-
-    var _shouldIgnoreLabelClickFromCheckboxOrRadioButton = function (e) {
-        return (((_hasParentWithMatchingSelector(e.target, '.checkbox') && $(e.target).closest('label').length != 0) ||
-            _hasParentWithMatchingSelector(e.target, '.radio_button') && $(e.target).closest('label').length != 0)) && e.type == 'click';
-    };
-
-    var _hasParentWithMatchingSelector = function (target, selector) {
-        return $(target).parents(selector).length != 0;
     };
 
     var _attachCustomObjectEvent = function(elementId, eventName, fn) {
@@ -796,25 +786,13 @@ $axure.internal(function ($ax) {
             //        $jobj($ax.INPUT(elementId)).css('color', 'grayText');
             //    }
             //};
-            const isInput = $ax.public.fn.IsTextArea(dObj.type) || $ax.public.fn.IsTextBox(dObj.type);
-            if(isInput) {
-                var inputJobj = $jobj($ax.INPUT(elementId));
-                inputJobj.bind('keyup', function(e) {
-                    //prevents triggering player shortcuts
-                    e.preventDefault();
-                });
-            }
-
-            const isDateTimeTypeInput = function($input) {
-                const type = $input.attr('type');
-                return type == 'date' || type == 'month' || type == 'time';
-            }
 
             // Initialize Placeholders. Right now this is text boxes and text areas.
             // Also, the assuption is being made that these widgets with the placeholder, have no other styles (this may change...)
             var hasPlaceholder = dObj.placeholderText == '' ? true : Boolean(dObj.placeholderText);
-            if(isInput && hasPlaceholder) {
+            if(($ax.public.fn.IsTextArea(dObj.type) || $ax.public.fn.IsTextBox(dObj.type)) && hasPlaceholder) {
                 // This is needed to initialize the placeholder state
+                var inputJobj = $jobj($ax.INPUT(elementId));
                 inputJobj.bind('focus', function () {
                     if(dObj.HideHintOnFocused) {
                         var id = this.id;
@@ -838,6 +816,8 @@ $axure.internal(function ($ax) {
                     $ax.placeholderManager.updatePlaceholder(inputId, true);
                 });
 
+                if(ANDROID) {
+                    //input fires before keyup, to avoid flicker, supported in ie9 and above
                     inputJobj.bind('input', function() {
                         if(!dObj.HideHintOnFocused) { //hide on type
                             var id = this.id;
@@ -845,22 +825,15 @@ $axure.internal(function ($ax) {
                             if(inputIndex == -1) return;
                             var inputId = id.substring(0, inputIndex);
 
-                        var $input = $jobj(id);
-                        var emptyInputValue = !$input.val();
-
-                        var invalidDateTimeInput = isDateTimeTypeInput($input) && !$input[0].validity.valid;
-                        if ($ax.placeholderManager.isActive(inputId)) {
-                            // clear text if emptyInputValue is true;
-                            $ax.placeholderManager.updatePlaceholder(inputId, false, emptyInputValue);
+                            if($ax.placeholderManager.isActive(inputId)) {
+                                $ax.placeholderManager.updatePlaceholder(inputId, false, true);
+                            } else if(!$jobj(id).val()) {
+                                $ax.placeholderManager.updatePlaceholder(inputId, true, false);
+                                $ax.placeholderManager.moveCaret(id, 0);
+                            }
                         }
-                        else if (emptyInputValue && !invalidDateTimeInput) {
-                            $ax.placeholderManager.updatePlaceholder(inputId, true);
-                            $ax.placeholderManager.moveCaret(id, 0);
-                        }
-                }
-                });
-
-                if(!ANDROID) {
+                    });
+                } else {
                     inputJobj.bind('keydown', function() {
                         if(!dObj.HideHintOnFocused) {
                             var id = this.id;
@@ -871,6 +844,20 @@ $axure.internal(function ($ax) {
                             if(!$ax.placeholderManager.isActive(inputId)) return;
                             $ax.placeholderManager.updatePlaceholder(inputId, false, true);
                         }
+                    }).bind('keyup', function(e) {
+                        var id = this.id;
+                        var inputIndex = id.indexOf('_input');
+                        if(inputIndex == -1) return;
+                        var inputId = id.substring(0, inputIndex);
+
+                        if($ax.placeholderManager.isActive(inputId)) return;
+                        if(!dObj.HideHintOnFocused && !$jobj(id).val()) {
+                            $ax.placeholderManager.updatePlaceholder(inputId, true);
+                            $ax.placeholderManager.moveCaret(id, 0);
+                        }
+
+                        //prevents triggering player shortcuts
+                        e.preventDefault();
                     });
                 }
 
@@ -1161,7 +1148,7 @@ $axure.internal(function ($ax) {
                     if(input.prop('selected')) {
                         $ax.updateRadioButtonSelected(radioGroupName, elementId);
                     }
-                    var onClick = function(e) {
+                    var onClick = function() {
                         if(radioGroupName !== elementId) {
                             var radioGroup = $("input[name='" + radioGroupName + "']").parent();
                             for(var i = 0; i < radioGroup.length; i++) {
@@ -1169,12 +1156,10 @@ $axure.internal(function ($ax) {
                             }
                         }
                         $ax.style.SetWidgetSelected(elementId, true, true);
-                        if(!$ax.style.IsWidgetDisabled(elementId)) e.originalEvent.handled = true;
                     };
                 } else {
-                    onClick = function(e) {
+                    onClick = function () {
                         $ax.style.SetWidgetSelected(elementId, !$ax.style.IsWidgetSelected(elementId), true);
-                        if(!$ax.style.IsWidgetDisabled(elementId)) e.originalEvent.handled = true;
                     };                                        
                 }
                 input.click(onClick);
@@ -1572,8 +1557,7 @@ $axure.internal(function ($ax) {
         if(!e) return;
 
         if(IE_10_AND_BELOW && typeof (e.type) == 'unknown') return;
-        if(e.type != 'mousemove' && e.type != 'touchstart' && e.type != 'touchmove' && e.type != 'touchend'
-            && e.type != 'pointermove' && e.type != 'pointerdown' && e.type != 'pointerup') return;
+        if(e.type != 'mousemove' && e.type != 'touchstart' && e.type != 'touchmove' && e.type != 'touchend') return;
 
         var newX;
         var newY;
@@ -1622,23 +1606,17 @@ $axure.internal(function ($ax) {
     };
     $ax.event.raiseSelectedEvents = _raiseSelectedEvents;
 
-    var _raiseSyntheticEvent = function (elementId, eventName, skipShowDescription, eventInfo, nonSynthetic) {
-        if ($ax.style.IsWidgetDisabled(elementId) && _shouldStopOnDisabledWidget(eventName)) return;
+    var _raiseSyntheticEvent = function(elementId, eventName, skipShowDescription, eventInfo, nonSynthetic) {
         // Empty string used when this is an event directly on the page.
         var dObj = elementId === '' ? $ax.pageData.page : $ax.getObjectFromElementId(elementId);
         var axEventObject = dObj && dObj.interactionMap && dObj.interactionMap[eventName];
-        if (!axEventObject) return;
+        if(!axEventObject) return;
 
         eventInfo = eventInfo || $ax.getEventInfoFromEvent($ax.getjBrowserEvent(), skipShowDescription, elementId);
         //        $ax.recording.maybeRecordEvent(elementId, eventInfo, axEventObject, new Date().getTime());
         _handleEvent(elementId, eventInfo, axEventObject, false, !nonSynthetic);
     };
     $ax.event.raiseSyntheticEvent = _raiseSyntheticEvent;
-
-    var _shouldStopOnDisabledWidget = function (eventName) {
-        var blackList = ["onLongClick"];
-        return blackList.some(x => x === eventName);
-    }
 
     var _hasSyntheticEvent = function(scriptId, eventName) {
         var dObj = $ax.getObjectFromScriptId(scriptId);
@@ -1956,10 +1934,10 @@ $axure.internal(function ($ax) {
             PAGE_AXURE_TO_JQUERY_EVENT_NAMES.onMouseMove = ['html', 'mousemove'];
         } else {
             _event.initMobileEvents($win, $win, '');
-        }
 
-        $win.bind($ax.features.eventNames.mouseDownName, _updateMouseLocation);
-        $win.bind($ax.features.eventNames.mouseUpName, function(e) { _updateMouseLocation(e, true); });
+            $win.bind($ax.features.eventNames.mouseDownName, _updateMouseLocation);
+            $win.bind($ax.features.eventNames.mouseUpName, function(e) { _updateMouseLocation(e, true); });
+        }
         
         $win.scroll(function () { _setCanClick(false); });
         $win.bind($ax.features.eventNames.mouseDownName, function () { _setCanClick(true); });
@@ -1980,7 +1958,6 @@ $axure.internal(function ($ax) {
 
                 $(jObj)[actionName](function (e) {
                     $ax.setjBrowserEvent(e);
-                    if(_shouldIgnoreLabelClickFromCheckboxOrRadioButton(e)) return;
                     return fireEventThroughContainers(axureName, undefined, false, [$ax.constants.PAGE_TYPE, $ax.constants.REFERENCE_DIAGRAM_OBJECT_TYPE, $ax.constants.DYNAMIC_PANEL_TYPE, $ax.constants.REPEATER],
                         [$ax.constants.PAGE_TYPE, $ax.constants.REFERENCE_DIAGRAM_OBJECT_TYPE]);
                 });

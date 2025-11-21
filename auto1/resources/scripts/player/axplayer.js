@@ -8,9 +8,9 @@ var CLOUD_VAR_NAME = 'cl';
 var TRACE_VAR_NAME = 'tr';
 var RP_VERSION = 9;
 var lastLeftPanelWidth = 220;
-var lastRightPanelWidth = 290;
+var lastRightPanelWidth = 220;
 var lastLeftPanelWidthDefault = 220;
-var lastRightPanelWidthDefault = 290;
+var lastRightPanelWidthDefault = 220;
 var toolBarOnly = true;
 
 // isolate scope
@@ -33,6 +33,7 @@ var toolBarOnly = true;
     var isCloud = $axure.player.isCloud = getHashStringVar(CLOUD_VAR_NAME);
     if (isCloud) {
         $("#topPanel").css('display', 'none');
+        lastRightPanelWidthDefault = 290;
     }else {
         $("#topPanel").css('display', '');
     }
@@ -112,11 +113,7 @@ var toolBarOnly = true;
             window.location = 'resources/chrome/firefox.html';
         }
     });
-    
-    $(window).on('hashchange', function() {
-        window.location.reload();
-    });
-    
+
     function appendOutOfDateNotification() {
         var toAppend = '';
         toAppend += '<div id="browserOutOfDateNotification">';
@@ -1198,9 +1195,9 @@ var toolBarOnly = true;
             if (safariAuthResponseProfile) response = safariAuthResponseProfile;
             userAcct.userId = response.userId;
             if (safariAuthResponseProfile) 
-                userAcct.userName = response.username == null || response.username.trim() === '' ? response.userEmail : response.username.trim();
+                userAcct.userName = response.username == null || response.username.trim() === '' ? response.userEmail : decodeURIComponent(response.username.trim());
             else
-                userAcct.userName = response.nickname == null || response.nickname.trim() === '' ? response.userEmail : response.nickname.trim();
+                userAcct.userName = response.nickname == null || response.nickname.trim() === '' ? response.userEmail : decodeURIComponent(response.nickname.trim());
             userAcct.userEmail = response.userEmail;
             userAcct.userProfileImg = response.profileImageUrl;
             userAcct.isUsingAxureAcct = true;

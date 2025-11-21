@@ -96,6 +96,8 @@
 }
 .shape {
 }
+._图像_ {
+}
 .primary_button {
   color:#FFFFFF;
 }
@@ -140,6 +142,9 @@
 ._连接 {
 }
 .sticky_1 {
+  text-align:left;
+}
+.sticky_4 {
   text-align:left;
 }
 .marker {
