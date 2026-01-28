@@ -104,7 +104,7 @@
       <div id="u7" class="ax_default paragraph">
         <div id="u7_div" class=""></div>
         <div id="u7_text" class="text ">
-          <p><span>a. DF团队杀率</span></p><ul><li style=""><span>数据来源：【管理后台】-【代理盈亏】</span></li><li style=""><span>获取字段：杀率=会员输赢/投注额</span></li></ul><p><span>b. DF团队净杀率</span></p><ul><li style=""><span>数据来源：【管理后台】-【代理盈亏】</span></li><li style=""><span>获取字段：净杀率=代理净输赢/投注额</span></li></ul><p><span>c. DF团队环比昨日杀率</span></p><ul><li style=""><span>数据来源：【管理后台】-【代理盈亏】</span></li><li style=""><span>获取字段：（昨日杀率-前日杀率）/前日杀率，</span><span style="color:#D9001B;">昨日的数值减去前天的数值，如果是正数：环比昨日上升 48%，如果是负数：环比昨日下降 33%</span></li></ul><p><span>d. DF团队环比昨日净杀率</span></p><ul><li style=""><span>数据来源：【管理后台】-【代理盈亏】</span></li><li style=""><span>获取字段：（昨日净杀率-前日净杀率）/前日净杀率，</span><span style="color:#D9001B;">昨日的数值减去前天的数值，如果是正数：环比昨日上升 48%，如果是负数：环比昨日下降 33%</span></li></ul><p><span>e. DF团队杀率上升主力&amp;DF团队杀率下降主因</span></p><ul><li style=""><span>数据来源：【管理后台】-【盈亏汇总】/【投注记录new】</span></li><li style=""><span>DF团队杀率上升主力获取字段：</span><span style="color:#D9001B;">若DF团队环比昨日杀率是上升的</span><span> ，那么在盈亏汇总中找下昨日环比上升最多的那个场馆：</span><span style="color:#D9001B;">输赢差值=昨天的总输赢-前天的总输赢，若得出输赢差值在10W以上的有多个场馆，则取排名在前两个的，若得出的输赢差值没有在10W以上的，则取排名第一的场馆，然后在【投注记录new】中场馆中哪个游戏影响最大，影响最大比例公式=盈亏金额/有效投注</span></li><li style=""><span>DF团队杀率下降主因获取字段：</span><span style="color:#D9001B;">若DF团队环比昨日杀率是下降的</span><span> ，那么在盈亏汇总中找下昨日环比下降最多的那个场馆：</span><span style="color:#D9001B;">输赢差值=昨天的总输赢-前天的总输赢，，若得出输赢差值在-10W以上的有多个场馆，则取排名在倒数最后两个的，若得出的输赢差值没有在-10W以上的，则取排名倒数第一的场馆，则在【投注记录new】中以得出哪个游戏影响最大，影响最大比例公式=盈亏金额/有效投注</span></li></ul><p><span><br></span></p><p><span>f. DF较大流失用户</span></p><ul><li style=""><span>数据来源：【管理后台】-【投注记录new】</span></li><li style=""><span>获取字段：昨天投注额-前天投注额</span><span style="color:#D9001B;">（判断会员那个场馆流失最多）</span></li></ul><p><span><br></span></p><p><span><br></span></p><p><span><br></span></p><p><span><br></span></p>
+          <p><span>a. DF团队杀率</span></p><ul><li style=""><span>数据来源：【管理后台】-【代理盈亏】</span></li><li style=""><span>获取字段：杀率=会员输赢/投注额，若计算出来杀率为0则显示0%</span></li></ul><p><span>b. DF团队净杀率</span></p><ul><li style=""><span>数据来源：【管理后台】-【代理盈亏】</span></li><li style=""><span>获取字段：净杀率=代理净输赢/投注额，若计算出来净杀率为0则显示0%</span></li></ul><p><span>c. DF团队环比昨日杀率</span></p><ul><li style=""><span>数据来源：【管理后台】-【代理盈亏】</span></li><li style=""><span>获取字段：（昨日杀率-前日杀率）/前日杀率，</span><span style="color:#D9001B;">场景举例：</span></li><li style=""><span style="color:#000000;">场景1：昨日的数值减去前天的数值，如果是正数：环比昨日上升 48%</span></li><li style=""><span style="color:#000000;">场景2：昨日的数值减去前天的数值，如果是负数：环比昨日下降 33%</span></li><li style=""><span style="color:#000000;">场景3：</span><span style="color:#D9001B;">若</span><span>昨日杀率与前日杀率一致，则：环比昨日基本持平</span></li><li style=""><span style="color:#000000;">场景4：</span><span>若昨日杀率有正常值，前日杀率为0，则属于 </span><span style="color:#D9001B;">：环比昨日上升 （因前日首次出现杀率为0，无法判断上升百分比）</span></li></ul><p><span>d. DF团队环比昨日净杀率</span></p><ul><li style=""><span>数据来源：【管理后台】-【代理盈亏】</span></li><li style=""><span>获取字段：（昨日净杀率-前日净杀率）/前日净杀率，</span><span style="color:#D9001B;">场景举例：</span></li><li style=""><span style="color:#000000;">场景1：昨日的数值减去前天的数值，如果是正数：环比昨日上升 48%</span></li><li style=""><span style="color:#000000;">场景2：昨日的数值减去前天的数值，如果是负数：环比昨日下降 33%</span></li><li style=""><span style="color:#000000;">场景3：</span><span style="color:#D9001B;">若</span><span>昨日净杀率与前日净杀率一致，则：环比昨日基本持平</span></li><li style=""><span style="color:#000000;">场景4：</span><span>若昨日净杀率有正常值，前日净杀率为0，则属于 </span><span style="color:#D9001B;">：环比昨日上升 （因前日首次出现净杀率为0，无法判断上升百分比）</span></li></ul><p><span>e. DF团队杀率上升主力&amp;DF团队杀率下降主因</span></p><ul><li style=""><span>数据来源：【管理后台】-【盈亏汇总】/【投注记录new】</span></li><li style=""><span>DF团队杀率上升主力获取字段：</span><span style="color:#D9001B;">若DF团队环比昨日杀率是上升的</span><span> ，那么在盈亏汇总中找下昨日环比上升最多的那个场馆：</span><span style="color:#D9001B;">输赢差值=昨天的总输赢-前天的总输赢，若得出输赢差值在10W以上的有多个场馆，则取排名在前两个的，若得出的输赢差值没有在10W以上的，则取排名第一的场馆，然后在【投注记录new】中场馆中哪个游戏影响最大，影响最大比例公式=盈亏金额/有效投注</span></li><li style=""><span>DF团队杀率下降主因获取字段：</span><span style="color:#D9001B;">若DF团队环比昨日杀率是下降的</span><span> ，那么在盈亏汇总中找下昨日环比下降最多的那个场馆：</span><span style="color:#D9001B;">输赢差值=昨天的总输赢-前天的总输赢，，若得出输赢差值在-10W以上的有多个场馆，则取排名在倒数最后两个的，若得出的输赢差值没有在-10W以上的，则取排名倒数第一的场馆，则在【投注记录new】中以得出哪个游戏影响最大，影响最大比例公式=盈亏金额/有效投注</span></li><li style=""><span style="color:#000000;">说明1：如若是真人场馆，普通百家乐 或者 极速百家乐 分开计算</span></li><li style=""><span style="color:#000000;">说明2：体育类只统计单关，过滤掉串关的数据</span></li><li style=""><span style="color:#000000;">说明3：固定的游戏场馆游戏名字定义不明确的，如：奥丁体育的【篮球/美式足球】归类到其他</span></li><li style=""><span style="color:#000000;">说明4：若</span><span>环比昨日基本持平，则不需要统计</span></li><li style=""><span>说明5：</span><span style="color:#D9001B;">环比昨日上升 （因前日首次出现净杀率为0，无法判断上升百分比），若是正数的话一样之前的方式统计 上升场馆，负数就下降</span></li></ul><p><span><br></span></p><p><span>f. DF较大流失用户</span></p><ul><li style=""><span>数据来源：【管理后台】-【投注记录new】</span></li><li style=""><span>获取字段：流失额=昨天投注额-前天投注额</span><span style="color:#D9001B;">（判断会员那个场馆流失最多）取所有流失额 20w或者20w以上的 会员，如若没有，则此字段不需要抓取，表格中显示——</span></li></ul><p><span><br></span></p><p><span><br></span></p><p><span><br></span></p><p><span><br></span></p>
         </div>
       </div>
 
@@ -350,37 +350,37 @@
             <p><span>DB棋牌，kingG122@as 流水流失 177万左右;&nbsp; </span></p><p><span>熊猫自营，fzx2580369@as 流水流失 81万左右；</span></p><p><span>KY棋牌，a443478757@as 流水流失 68万左右;</span></p><p><span>DB真人，cygr9999@as 流水流失 53万左右</span></p>
           </div>
         </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u39" class="ax_default">
+          <img id="u39_img" class="img " src="images/需求描述/u39.png"/>
+          <div id="u39_text" class="text " style="display:none; visibility: hidden">
+            <p></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u40" class="ax_default">
+          <img id="u40_img" class="img " src="images/需求描述/u40.png"/>
+          <div id="u40_text" class="text " style="display:none; visibility: hidden">
+            <p></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (单元格) -->
+        <div id="u41" class="ax_default">
+          <img id="u41_img" class="img " src="images/需求描述/u41.png"/>
+          <div id="u41_text" class="text ">
+            <p><span>——</span></p>
+          </div>
+        </div>
       </div>
 
       <!-- Unnamed (水滴形) -->
-      <div id="u39" class="ax_default marker">
-        <img id="u39_img" class="img " src="images/需求描述/u39.svg"/>
-        <div id="u39_text" class="text ">
-          <p><span>1</span></p>
-        </div>
-      </div>
-
-      <!-- Unnamed (矩形) -->
-      <div id="u40" class="ax_default box_1">
-        <div id="u40_div" class=""></div>
-        <div id="u40_text" class="text ">
-          <p><span>3</span></p>
-        </div>
-      </div>
-
-      <!-- Unnamed (矩形) -->
-      <div id="u41" class="ax_default box_1">
-        <div id="u41_div" class=""></div>
-        <div id="u41_text" class="text ">
-          <p><span>DF团队环比昨日杀率</span></p>
-        </div>
-      </div>
-
-      <!-- Unnamed (矩形) -->
-      <div id="u42" class="ax_default box_1">
-        <div id="u42_div" class=""></div>
+      <div id="u42" class="ax_default marker">
+        <img id="u42_img" class="img " src="images/需求描述/u42.svg"/>
         <div id="u42_text" class="text ">
-          <p><span>4</span></p>
+          <p><span>1</span></p>
         </div>
       </div>
 
@@ -388,7 +388,7 @@
       <div id="u43" class="ax_default box_1">
         <div id="u43_div" class=""></div>
         <div id="u43_text" class="text ">
-          <p><span>DF团队环比昨日净杀率</span></p>
+          <p><span>3</span></p>
         </div>
       </div>
 
@@ -396,7 +396,47 @@
       <div id="u44" class="ax_default box_1">
         <div id="u44_div" class=""></div>
         <div id="u44_text" class="text ">
+          <p><span>DF团队环比昨日杀率</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u45" class="ax_default box_1">
+        <div id="u45_div" class=""></div>
+        <div id="u45_text" class="text ">
+          <p><span>4</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u46" class="ax_default box_1">
+        <div id="u46_div" class=""></div>
+        <div id="u46_text" class="text ">
+          <p><span>DF团队环比昨日净杀率</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u47" class="ax_default box_1">
+        <div id="u47_div" class=""></div>
+        <div id="u47_text" class="text ">
           <p><span>5</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u48" class="ax_default box_1">
+        <div id="u48_div" class=""></div>
+        <div id="u48_text" class="text ">
+          <p><span>6</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u49" class="ax_default box_1">
+        <div id="u49_div" class=""></div>
+        <div id="u49_text" class="text ">
+          <p><span>【DF较大流失用户】&nbsp; &nbsp; </span></p>
         </div>
       </div>
     </div>
